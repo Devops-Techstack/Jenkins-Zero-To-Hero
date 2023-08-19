@@ -1,0 +1,23 @@
+Deploy Minikube and jenkins in same docker network .Both will be deployed in Docker container.
+Pre-requisite: Install Docker Desktop and Minikube on your local .
+docker network ls 
+minikube start - By default it will be created in minikube network .
+docker run -d --name jenkins -p 8080:8080  -v jenkins_data2:/var/jenkins_home --network minikube jenkins/jenkins:lts
+
+Go to http://localhost:8080/ , Create a new user , get the admin password , install plugins
+docker logs container-id : Get Admin password 
+
+Need  to integrate Jenkins and Minikube:
+Get Kubeconfig of minikube cluster: cat  ~/.kube/config
+Replace certificate-authority,client-certificate and client-key with certificate-authority-data,client-certificate-data and client-key-data
+Also by default it will be file path , replace them with actual content in base 64 encoded format.
+Also replace     server: https://192.168.49.2:8443 , The ip will be output of minikube ip command.
+
+Install the kubernetes plugin from the Available plugin section .
+
+Now create a credential in jenkins to store kubeconfig
+http://localhost:8080/manage/credentials/store/system/domain/_/
+Add credential -> Type Secret File -> Upload the config file -> Give Id as test-minikube
+
+
+Create the Pipeline project now .
