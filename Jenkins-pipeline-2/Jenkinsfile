@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+    
+    environment {
+        KUBECONFIG = credentials('test-minikube')
+    }
+    
+    stages {
+        stage('Create Pod Manifest') {
+            steps {
+                script {
+                    def podYaml = """
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simple-pod4
+spec:
+  containers:
+    - name: nginx
+      image: nginx:latest
+"""
+                    sh "echo '$podYaml' > pod.yaml"
+                }
+            }
+        }
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    sh "kubectl --kubeconfig=$KUBECONFIG apply -f pod.yaml"
+                    sh "helm"
+                }
+            }
+        }
+    }
+}
