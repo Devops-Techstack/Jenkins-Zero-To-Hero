@@ -1,0 +1,8 @@
+Create the Dockerfile, Build the docker image 
+ docker build -t custom-jenkins-agent .
+ docker images
+
+ Start the Jenkins with new docker image , having kubectl and helm installed as part of image
+ docker run -d --name jenkins -p 8080:8080 -v jenkins_data2:/var/jenkins_home --network minikube custom-jenkins-agent:latest
+
+ Try running the jenkins pipeline with new pipeline script
